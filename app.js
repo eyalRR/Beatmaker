@@ -9,6 +9,7 @@ class DrumKit{
         this.snareAudio = document.querySelector(".snare-sound");
         this.hihatAudio = document.querySelector(".hihat-sound");
         this.muteBtns = document.querySelectorAll('.mute');
+        this.tempoSlider = document.querySelector(".tempo-slider");
         
         this.index = 0;
         this.bpm = 120;
@@ -60,12 +61,13 @@ class DrumKit{
         }    
     }
     updateBtn(){
-        if (this.isPlaying){ //IF it's playing, and Btn pushed then the music stops, and Btn changed to Play
+        if (this.isPlaying){ //IF it's playing, and we push Btn then the music stops, and Btn changed to Play
             this.playBtn.innerText = 'Play';
             this.playBtn.classList.remove('active');
         } else{
             this.playBtn.innerText = 'Stop';
             this.playBtn.classList.add('active');
+            console.log(this.playBtn.classList.contains('active'));
         }
     }
     changeSound(e){
@@ -113,6 +115,18 @@ class DrumKit{
             }
         }
     }
+    changeTempo(e){
+        const tempoText = document.querySelector(".tempo-nr");
+        tempoText.innerText = e.target.value;
+    }
+    updateTempo(e){
+        this.bpm = e.target.value;
+        clearInterval(this.isPlaying); //Stop start function in order to make it read a new bpm
+        this.isPlaying = null;
+        if (this.playBtn.classList.contains('active') ){ //If audio is active
+            this.start(); //Initiate start function
+        }
+    }
 }
 
 const drumKit = new DrumKit();
@@ -141,4 +155,11 @@ drumKit.muteBtns.forEach(btn => {
     btn.addEventListener('click', function(e){
         drumKit.mute(e);
     });
+});
+
+drumKit.tempoSlider.addEventListener('input', function(e){ //When button start moveing
+    drumKit.changeTempo(e);
+});
+drumKit.tempoSlider.addEventListener('change', function(e){ //When button released
+    drumKit.updateTempo(e);
 });
